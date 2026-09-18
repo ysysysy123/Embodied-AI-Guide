@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "RoboTwin 2.0：具身操作策略生命周期",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1080,
+      600
+    ],
+    "views": [
+      {
+        "id": "main-lifecycle",
+        "label": "主生命周期",
+        "focus": [
+          "read",
+          "setup",
+          "collect",
+          "train",
+          "evaluate"
+        ],
+        "note": "从理解仿真平台到得到策略评测结果。"
+      },
+      {
+        "id": "data-and-policy",
+        "label": "数据到策略",
+        "focus": [
+          "collect",
+          "train",
+          "evaluate"
+        ],
+        "note": "把数据分布、策略架构和训练资源联系起来。"
+      },
+      {
+        "id": "limits-and-evidence",
+        "label": "边界与证据",
+        "focus": [
+          "evaluate",
+          "offline",
+          "blocked",
+          "realworld"
+        ],
+        "note": "区分离线实验、仿真闭环和真机能力。"
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "main",
+      "label": "操作策略主线"
+    },
+    {
+      "id": "waiting",
+      "label": "资源与环境"
+    },
+    {
+      "id": "evidence",
+      "label": "证据边界"
+    },
+    {
+      "id": "terminal",
+      "label": "退出与后续"
+    }
+  ],
+  "states": [
+    {
+      "id": "read",
+      "type": "start",
+      "label": "Read RoboTwin",
+      "sublabel": "论文 · 任务 · ALOHA",
+      "lane": "main",
+      "col": 0,
+      "step": "01",
+      "tag": "理解"
+    },
+    {
+      "id": "setup",
+      "type": "active",
+      "label": "Setup",
+      "sublabel": "SAPIEN + RoboTwin",
+      "lane": "main",
+      "col": 1,
+      "step": "02",
+      "tag": "环境"
+    },
+    {
+      "id": "collect",
+      "type": "active",
+      "label": "Collect Data",
+      "sublabel": "clean / randomized",
+      "lane": "main",
+      "col": 2,
+      "step": "03",
+      "tag": "数据"
+    },
+    {
+      "id": "train",
+      "type": "active",
+      "label": "Train ACT",
+      "sublabel": "policy + GPU",
+      "lane": "main",
+      "col": 3,
+      "step": "04",
+      "tag": "训练"
+    },
+    {
+      "id": "evaluate",
+      "type": "decision",
+      "label": "Evaluate",
+      "sublabel": "success rate + videos",
+      "lane": "main",
+      "col": 4,
+      "step": "05",
+      "tag": "评测"
+    },
+    {
+      "id": "blocked",
+      "type": "waiting",
+      "label": "Blocked",
+      "sublabel": "GPU / environment",
+      "lane": "waiting",
+      "col": 1,
+      "tag": "等待"
+    },
+    {
+      "id": "offline",
+      "type": "waiting",
+      "label": "Offline Study",
+      "sublabel": "trajectory + loss",
+      "lane": "evidence",
+      "col": 2,
+      "tag": "替代",
+      "yOffset": 18
+    },
+    {
+      "id": "realworld",
+      "type": "failure",
+      "label": "Not Real-World",
+      "sublabel": "simulation ≠ robot",
+      "lane": "terminal",
+      "col": 2,
+      "tag": "边界",
+      "yOffset": -32
+    }
+  ],
+  "transitions": [
+    {
+      "id": "read-setup",
+      "from": "read",
+      "to": "setup",
+      "variant": "emphasis"
+    },
+    {
+      "id": "setup-collect",
+      "from": "setup",
+      "to": "collect",
+      "variant": "emphasis"
+    },
+    {
+      "id": "collect-train",
+      "from": "collect",
+      "to": "train",
+      "variant": "emphasis"
+    },
+    {
+      "id": "train-evaluate",
+      "from": "train",
+      "to": "evaluate",
+      "variant": "emphasis"
+    },
+    {
+      "id": "setup-blocked",
+      "from": "setup",
+      "to": "blocked",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "drop"
+    },
+    {
+      "id": "blocked-offline",
+      "from": "blocked",
+      "to": "offline",
+      "variant": "default",
+      "route": "auto"
+    },
+    {
+      "id": "evaluate-boundary",
+      "from": "evaluate",
+      "to": "realworld",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "right",
+      "route": "right-channel",
+      "channelX": 1040
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "主线验收",
+      "items": [
+        "理解 RoboTwin 2.0 的数据、策略、评测三件事",
+        "使用一个任务走通采集、训练和评测",
+        "保留配置、GPU 条件、成功率和视频/日志"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "资源现实",
+      "items": [
+        "指南标注完整教程至少需要 16GB 显存",
+        "环境无法运行时先做论文、轨迹和离线损失实验",
+        "离线替代路径必须单独标注，不伪装成闭环成功"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "能力边界",
+      "items": [
+        "仿真成功率不自动等于真机能力",
+        "还需考虑坐标系、关节/末端、观测动作和 Sim2Real",
+        "当前定位是领域地图加实践入口，不是短期必修全套"
+      ]
+    }
+  ]
+}
